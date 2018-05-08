@@ -1,6 +1,6 @@
 import Player from './Player'
 
-export interface Card {
+export default interface Card {
     name: string
     isPicked: boolean
     isSpecial: boolean
