@@ -6,6 +6,8 @@ import PlayersNotSpecifiedException from '../exceptions/PlayersNotSpecifiedExcep
 import GameOverException from '../exceptions/GameOverException'
 import Player from '../models/Player'
 import Card from '../models/Card'
+import InvalidPlayerNameSpecifiedException from '../exceptions/InvalidPlayerNameSpecifiedException';
+import NumberOfPlayersNotSpecifiedException from '../exceptions/NumberOfPlayersNotSpecifiedException';
 
 export default class RingOfFireService {
     private sessionData: any
@@ -17,6 +19,11 @@ export default class RingOfFireService {
     gameStarted: boolean = false
     playersSet: boolean = false
     players: Player[] = []
+
+    get haveAllPlayersBeenDefined(): boolean {
+        return this.numberOfPlayers > 0 
+            && this.players.length === this.numberOfPlayers
+    }
 
     constructor (sessionData: any) {
         this.sessionData = sessionData
@@ -41,10 +48,14 @@ export default class RingOfFireService {
 
         const player = new Player({
             name: name,
-            id: playerNumber
+            playerNumber: playerNumber
         })
 
         this.players.push(player)
+
+        if (this.players.length === this.numberOfPlayers) {
+            this.playersSet = true
+        }
     }
 
     public getCurrentPlayer (): Player {
@@ -93,8 +104,16 @@ export default class RingOfFireService {
             throw new GameNotStartedException()
         }
 
-        if (!this.playersSet) {
-            throw new PlayersNotSpecifiedException()
+        if (this.numberOfPlayers === 0) {
+            throw new NumberOfPlayersNotSpecifiedException()
+        }
+
+        if (this.haveAllPlayersBeenDefined) {
+            throw new PlayersAlreadyDefinedException()
+        }
+
+        if (playerNumber > this.numberOfPlayers) {
+            throw new InvalidPlayerNameSpecifiedException()
         }
     }
 
@@ -104,17 +123,19 @@ export default class RingOfFireService {
         }
     }
 
-    private checkCanPickCard (): void {
+    private checkCanPickCard (): boolean {
         if (!this.gameStarted) {
             throw new GameNotStartedException()
         }
 
-        if (!this.playersSet) {
+        if (!this.haveAllPlayersBeenDefined) {
             throw new PlayersNotSpecifiedException()
         }
 
         if (!this.cardsLeft) {
             throw new GameOverException()
         }
+
+        return true
     }
 }
