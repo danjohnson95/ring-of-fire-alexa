@@ -8,6 +8,7 @@ import InvalidPlayerNameSpecifiedException from '../exceptions/InvalidPlayerName
 import PlayersAlreadyDefinedException from '../exceptions/PlayersAlreadyDefinedException'
 import NumberOfPlayersAlreadyDefinedException from '../exceptions/NumberOfPlayersAlreadyDefinedException';
 import Player from '../models/Player';
+import NumberOfPlayersInvalidException from '../exceptions/NumberOfPlayersInvalidException';
 
 beforeEach(() => {
     this.game = new RingOfFireService({})
@@ -66,9 +67,24 @@ describe('Specifying number of players', () => {
 
     it('should disallow specifying number of players when number of players is already set', () => {
         expect(() => {
+            this.game.startNewGame()
             this.game.specifyNumberOfPlayers(2)
             this.game.specifyNumberOfPlayers(3)
         }).to.throw(NumberOfPlayersAlreadyDefinedException)
+    })
+
+    it('should disallow specifying number of players as zero', () => {
+        expect(() => {
+            this.game.startNewGame()
+            this.game.specifyNumberOfPlayers(0)
+        }).to.throw(NumberOfPlayersInvalidException)
+    })
+
+    it('should disallow specifying number of players as a negative integer', () => {
+        expect(() => {
+            this.game.startNewGame()
+            this.game.specifyNumberOfPlayers(-2)
+        }).to.throw(NumberOfPlayersInvalidException)
     })
 
     it('should allow numbering players when a game is started and no names have been set', () => {
