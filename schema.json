@@ -1,0 +1,353 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "ring of fire",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "GetNextCard",
+                    "slots": [],
+                    "samples": [
+                        "get me a card",
+                        "get us a card",
+                        "get a card",
+                        "give us a card",
+                        "give me a card",
+                        "i'm ready for a card",
+                        "i'm ready",
+                        "grab a card",
+                        "grab us one",
+                        "grab one",
+                        "pick us one",
+                        "pick one",
+                        "next one",
+                        "pick us a card",
+                        "pick me a card",
+                        "pick a card please",
+                        "pick a card",
+                        "go",
+                        "next",
+                        "next card please",
+                        "next card",
+                        "card please",
+                        "card"
+                    ]
+                },
+                {
+                    "name": "SpecifyPlayer",
+                    "slots": [
+                        {
+                            "name": "name",
+                            "type": "AMAZON.GB_FIRST_NAME"
+                        }
+                    ],
+                    "samples": [
+                        "my name is {name}",
+                        "it's {name}",
+                        "{name}",
+                        "i'm {name}"
+                    ]
+                },
+                {
+                    "name": "WhoHasSpecialCard",
+                    "slots": [
+                        {
+                            "name": "SpecialCard",
+                            "type": "SpecialCard"
+                        },
+                        {
+                            "name": "name",
+                            "type": "AMAZON.GB_FIRST_NAME"
+                        }
+                    ],
+                    "samples": [
+                        "tell me who is {SpecialCard}",
+                        "tell us who's {SpecialCard}",
+                        "tell me who {SpecialCard} is",
+                        "does {name} still have {SpecialCard}",
+                        "does {name} have {SpecialCard}",
+                        "is {name} {SpecialCard}",
+                        "is {name} still in charge of {SpecialCard}",
+                        "is {name} still {SpecialCard}",
+                        "which player is {SpecialCard}",
+                        "who's in charge of {SpecialCard}",
+                        "who's got {SpecialCard}",
+                        "who's {SpecialCard}",
+                        "who's the {SpecialCard}",
+                        "who's the {SpecialCard} holder"
+                    ]
+                },
+                {
+                    "name": "SpecifyNumberOfPlayers",
+                    "slots": [
+                        {
+                            "name": "NumberOfPlayers",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "{NumberOfPlayers} people",
+                        "{NumberOfPlayers} of us",
+                        "there's {NumberOfPlayers} of us",
+                        "{NumberOfPlayers}",
+                        "just {NumberOfPlayers}"
+                    ]
+                },
+                {
+                    "name": "GetRemainingCount",
+                    "slots": [
+                        {
+                            "name": "card",
+                            "type": "Card"
+                        }
+                    ],
+                    "samples": [
+                        "Is there still a {card}",
+                        "Is there a {card} left",
+                        "Is there any {card} left",
+                        "How many {card} is there",
+                        "How many {card} are left",
+                        "How many {card} are there left"
+                    ]
+                },
+                {
+                    "name": "GetOccurrenceCount",
+                    "slots": [
+                        {
+                            "name": "name",
+                            "type": "AMAZON.GB_FIRST_NAME"
+                        },
+                        {
+                            "name": "card",
+                            "type": "Card"
+                        }
+                    ],
+                    "samples": [
+                        "How many {card} has {name} had",
+                        "How many times have you given {name} a {card}",
+                        "How many times has {name} had a {card}"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "SpecialCard",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "question master"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "heaven master"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "thumb master"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Card",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "King",
+                                "synonyms": [
+                                    "kings",
+                                    "pours"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Queen",
+                                "synonyms": [
+                                    "queens",
+                                    "question card"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Jack",
+                                "synonyms": [
+                                    "jacks",
+                                    "rules"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Ten",
+                                "synonyms": [
+                                    "tens",
+                                    "categories",
+                                    "category card"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Nine",
+                                "synonyms": [
+                                    "nines",
+                                    "rhyme"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Eight",
+                                "synonyms": [
+                                    "eights",
+                                    "mate"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Seven",
+                                "synonyms": [
+                                    "sevens",
+                                    "heaven"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Six",
+                                "synonyms": [
+                                    "sixes"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Five",
+                                "synonyms": [
+                                    "fives",
+                                    "thumb master"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Four",
+                                "synonyms": [
+                                    "fours"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Three",
+                                "synonyms": [
+                                    "threes",
+                                    "me"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Two",
+                                "synonyms": [
+                                    "twos",
+                                    "choose"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Ace",
+                                "synonyms": [
+                                    "aces",
+                                    "one",
+                                    "ones",
+                                    "waterfall"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "dialog": {
+            "intents": [
+                {
+                    "name": "SpecifyPlayer",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "name",
+                            "type": "AMAZON.GB_FIRST_NAME",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.158173347708.1256483581752"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "WhoHasSpecialCard",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "SpecialCard",
+                            "type": "SpecialCard",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.830620779634.627410600110"
+                            }
+                        },
+                        {
+                            "name": "name",
+                            "type": "AMAZON.GB_FIRST_NAME",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
+                        }
+                    ]
+                }
+            ]
+        },
+        "prompts": [
+            {
+                "id": "Elicit.Slot.158173347708.1256483581752",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What was that, sorry?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.830620779634.627410600110",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Which one?"
+                    }
+                ]
+            }
+        ]
+    }
+}
