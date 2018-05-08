@@ -5,14 +5,18 @@ import PlayersAlreadyDefinedException from '../exceptions/PlayersAlreadyDefinedE
 import PlayersNotSpecifiedException from '../exceptions/PlayersNotSpecifiedException'
 import GameOverException from '../exceptions/GameOverException'
 import Player from '../models/Player'
+import Card from '../models/Card'
 
 export default class RingOfFireService {
     private sessionData: any
     private numberOfPlayers: number = 0
+    private currentPlayer: Player | null = null
+    private cardsLeft: boolean = false
+    private cards: Card[]
 
     gameStarted: boolean = false
     playersSet: boolean = false
-    players: Player[]
+    players: Player[] = []
 
     constructor (sessionData: any) {
         this.sessionData = sessionData
@@ -21,6 +25,7 @@ export default class RingOfFireService {
     public startNewGame () {
         this.gameStarted = true
         this.playersSet = false
+        this.cardsLeft = true
         this.players = []
     }
 
@@ -40,6 +45,33 @@ export default class RingOfFireService {
         })
 
         this.players.push(player)
+    }
+
+    public getCurrentPlayer (): Player {
+        return new Player({})
+    }
+
+    public getNextPlayer (): Player {
+        return new Player({})
+    }
+
+    public pickNextCard (): Card {
+        this.checkCanPickCard()
+
+        const currentPlayer = this.getNextPlayer()
+        const nextCard = this.getRandomCard()
+
+        nextCard.pickedBy = currentPlayer
+        nextCard.isPicked = true
+
+        return nextCard
+    }
+
+    private getRandomCard (): Card {
+        const unpickedCards = this.cards.filter(card => !card.isPicked)
+        const randomIndex = Math.floor(Math.random() * unpickedCards.length)
+
+        return unpickedCards[randomIndex]
     }
 
     private checkCanSpecifyNumberOfPlayers (): void {
