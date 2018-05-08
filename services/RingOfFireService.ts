@@ -2,6 +2,8 @@ import GameNotStartedException from '../exceptions/GameNotStartedException'
 import NumberOfPlayersAlreadyDefinedException from '../exceptions/NumberOfPlayersAlreadyDefinedException'
 import NumberOfPlayersInvalidException from '../exceptions/NumberOfPlayersInvalidException'
 import PlayersAlreadyDefinedException from '../exceptions/PlayersAlreadyDefinedException'
+import PlayersNotSpecifiedException from '../exceptions/PlayersNotSpecifiedException'
+import GameOverException from '../exceptions/GameOverException'
 import Player from '../models/Player'
 
 export default class RingOfFireService {
@@ -59,12 +61,28 @@ export default class RingOfFireService {
             throw new GameNotStartedException()
         }
 
-        if (this.playersSet)
+        if (!this.playersSet) {
+            throw new PlayersNotSpecifiedException()
+        }
     }
 
     private checkNumberOfPlayersIsValid (numberOfPlayers: number) {
         if (numberOfPlayers < 1) {
             throw new NumberOfPlayersInvalidException()
+        }
+    }
+
+    private checkCanPickCard (): void {
+        if (!this.gameStarted) {
+            throw new GameNotStartedException()
+        }
+
+        if (!this.playersSet) {
+            throw new PlayersNotSpecifiedException()
+        }
+
+        if (!this.cardsLeft) {
+            throw new GameOverException()
         }
     }
 }
