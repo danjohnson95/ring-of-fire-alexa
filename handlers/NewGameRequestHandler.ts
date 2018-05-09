@@ -38,6 +38,10 @@ export default class NewGameRequestHandler implements RequestHandler {
         const sessionData = handlerInput.attributesManager
         const game = new RingOfFireService(sessionData)
 
+        if (game.gameStarted) {
+            return this.gameAlreadyInProgressResponse(handlerInput)
+        }
+
         game.startNewGame()
 
         return handlerInput.responseBuilder
@@ -52,5 +56,11 @@ export default class NewGameRequestHandler implements RequestHandler {
 
     getRepromptSpeech (): string {
         return this.randomRepromptSpeech
+    }
+
+    gameAlreadyInProgressResponse (handlerInput: HandlerInput): Response {
+        return handlerInput.responseBuilder
+            .speak('There\'s already a game in progress. If you want to start over, just say "Alexa, ask Ring of Fire to end this game"')
+            .getResponse()
     }
 }
