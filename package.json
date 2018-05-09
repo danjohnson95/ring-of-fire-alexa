@@ -4,7 +4,7 @@
     "main": "index.ts",
     "author": "Dan Johnson <dan@danj.eu>",
     "scripts": {
-        "build": "webpack-cli",
+        "build": "./node_modules/.bin/webpack-cli",
         "test": "mocha -r ts-node/register spec/**/*.spec.ts"
     },
     "devDependencies": {
@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "ask-sdk-core": "^2.0.3",
+        "ask-sdk-dynamodb-persistence-adapter": "^2.0.3",
         "ask-sdk-model": "^1.2.0"
     }
 }
