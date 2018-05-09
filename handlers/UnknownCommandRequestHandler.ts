@@ -1,4 +1,4 @@
-import { HandlerInput, RequestHandler } from 'ask-sdk'
+import { HandlerInput, RequestHandler } from 'ask-sdk-core'
 import { Response } from 'ask-sdk-model'
 
 export default class UnknownCommandRequestHandler implements RequestHandler {

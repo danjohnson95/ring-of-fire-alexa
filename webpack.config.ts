@@ -2,16 +2,16 @@
 import * as path from 'path'
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: './index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'handler.js'
+        filename: 'handler.js',
+        libraryTarget: 'commonjs'
     },
     resolve: {
         extensions: ['.ts', '.js']
     },
-    target: 'node',
     module: {
         rules: [
             { test: /\.ts$/, use: 'ts-loader' }

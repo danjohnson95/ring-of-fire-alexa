@@ -6,6 +6,6 @@
     "inlineSources" : false,
     "alwaysStrict" : true,
     "removeComments" : false,
-    "lib": ["es2017", "dom"]
+    "lib": ["es2017"]
   }  
 }
