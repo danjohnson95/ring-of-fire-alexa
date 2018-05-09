@@ -13,8 +13,8 @@ export default class SpecifyNumberOfPlayersRequestHandler implements RequestHand
     }
 
     handle (handlerInput: HandlerInput): Response {
-        const sessionData = handlerInput.attributesManager
-        const game = new RingOfFireService(sessionData)
+        const requestEnvelope = handlerInput.requestEnvelope
+        const game = new RingOfFireService(requestEnvelope)
         const request: IntentRequest = <IntentRequest> handlerInput.requestEnvelope.request
         const numberOfPlayers = Number.parseInt(request.intent.slots.number.value)
 

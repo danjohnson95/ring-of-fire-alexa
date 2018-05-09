@@ -8,11 +8,14 @@ import Player from '../models/Player'
 import Card from '../models/Card'
 import InvalidPlayerNameSpecifiedException from '../exceptions/InvalidPlayerNameSpecifiedException';
 import NumberOfPlayersNotSpecifiedException from '../exceptions/NumberOfPlayersNotSpecifiedException';
+import { DynamoDbPersistenceAdapter } from 'ask-sdk-dynamodb-persistence-adapter'
+import { RequestEnvelope } from 'ask-sdk-model'
 
 export default class RingOfFireService {
-    private sessionData: any
+    private requestEnvelope: RequestEnvelope
     private numberOfPlayers: number = 0
     private cards: Card[]
+    private persistenceAdapter: DynamoDbPersistenceAdapter
 
     gameStarted: boolean = false
     players: Player[] = []
@@ -32,8 +35,11 @@ export default class RingOfFireService {
             && this.players.length === this.numberOfPlayers
     }
 
-    constructor (sessionData: any) {
-        this.sessionData = sessionData
+    constructor (requestEnvelope: RequestEnvelope) {
+        this.requestEnvelope = requestEnvelope
+        this.persistenceAdapter = new DynamoDbPersistenceAdapter({
+            tableName: 'ringOfFire'
+        })
     }
 
     public startNewGame () {

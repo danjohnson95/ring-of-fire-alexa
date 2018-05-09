@@ -35,8 +35,8 @@ export default class NewGameRequestHandler implements RequestHandler {
     }
 
     handle (handlerInput: HandlerInput): Response | Promise<Response> {
-        const sessionData = handlerInput.attributesManager
-        const game = new RingOfFireService(sessionData)
+        const requestEnvelope = handlerInput.requestEnvelope
+        const game = new RingOfFireService(requestEnvelope)
 
         if (game.gameStarted) {
             return this.gameAlreadyInProgressResponse(handlerInput)
