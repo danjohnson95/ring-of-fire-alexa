@@ -12,13 +12,20 @@ import NumberOfPlayersNotSpecifiedException from '../exceptions/NumberOfPlayersN
 export default class RingOfFireService {
     private sessionData: any
     private numberOfPlayers: number = 0
-    private currentPlayer: Player | null = null
-    private cardsLeft: boolean = false
     private cards: Card[]
 
     gameStarted: boolean = false
-    playersSet: boolean = false
     players: Player[] = []
+
+    get anyCardsLeft(): boolean {
+        // TODO: Have 4 Kings been picked? If not, continue.
+        return true
+    }
+
+    get currentPlayer(): Player {
+        // TODO: Work out which one is the current one.
+        return new Player({})
+    }
 
     get haveAllPlayersBeenDefined(): boolean {
         return this.numberOfPlayers > 0 
@@ -31,8 +38,6 @@ export default class RingOfFireService {
 
     public startNewGame () {
         this.gameStarted = true
-        this.playersSet = false
-        this.cardsLeft = true
         this.players = []
     }
 
@@ -52,14 +57,6 @@ export default class RingOfFireService {
         })
 
         this.players.push(player)
-
-        if (this.players.length === this.numberOfPlayers) {
-            this.playersSet = true
-        }
-    }
-
-    public getCurrentPlayer (): Player {
-        return new Player({})
     }
 
     public getNextPlayer (): Player {
@@ -69,10 +66,9 @@ export default class RingOfFireService {
     public pickNextCard (): Card {
         this.checkCanPickCard()
 
-        const currentPlayer = this.getNextPlayer()
         const nextCard = this.getRandomCard()
 
-        nextCard.pickedBy = currentPlayer
+        nextCard.pickedBy = this.currentPlayer
         nextCard.isPicked = true
 
         return nextCard
@@ -94,7 +90,7 @@ export default class RingOfFireService {
             throw new NumberOfPlayersAlreadyDefinedException()
         }
 
-        if (this.playersSet) {
+        if (this.haveAllPlayersBeenDefined) {
             throw new PlayersAlreadyDefinedException()
         }
     }
@@ -132,7 +128,7 @@ export default class RingOfFireService {
             throw new PlayersNotSpecifiedException()
         }
 
-        if (!this.cardsLeft) {
+        if (!this.anyCardsLeft) {
             throw new GameOverException()
         }
 
