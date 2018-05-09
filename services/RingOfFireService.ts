@@ -10,12 +10,14 @@ import InvalidPlayerNameSpecifiedException from '../exceptions/InvalidPlayerName
 import NumberOfPlayersNotSpecifiedException from '../exceptions/NumberOfPlayersNotSpecifiedException';
 import { DynamoDbPersistenceAdapter } from 'ask-sdk-dynamodb-persistence-adapter'
 import { RequestEnvelope } from 'ask-sdk-model'
+import GameplayStatus from '../models/GameplayStatus'
 
 export default class RingOfFireService {
     private requestEnvelope: RequestEnvelope
     private numberOfPlayers: number = 0
     private cards: Card[]
     private persistenceAdapter: DynamoDbPersistenceAdapter
+    private gameplayStatus: GameplayStatus
 
     gameStarted: boolean = false
     players: Player[] = []
@@ -45,6 +47,8 @@ export default class RingOfFireService {
     public startNewGame () {
         this.gameStarted = true
         this.players = []
+
+        this.persistenceAdapter.saveAttributes(this.requestEnvelope, this.gameplayStatus)
     }
 
     public specifyNumberOfPlayers (numberOfPlayers: number) {
