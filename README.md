@@ -2,7 +2,7 @@
 
 An Alexa Skill for the Ring Of Fire drinking game, written in TypeScript.
 
-[![Build Status](https://travis-ci.org/danjohnson95/ring-of-fire-alexa.svg?branch=master)](https://travis-ci.org/danjohnson95/ring-of-fire-alexa)
+[![Build Status](https://travis-ci.com/danjohnson95/ring-of-fire-alexa.svg?branch=master)](https://travis-ci.com/danjohnson95/ring-of-fire-alexa)
 
 ## Rules of the Game
 
