@@ -7,7 +7,7 @@ export enum Suite {
     Diamonds = 'Diamonds'
 }
 
-interface CardInterface {
+export interface CardInterface {
     name: string
     suite: Suite
     descriptions: string[]

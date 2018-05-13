@@ -2,22 +2,27 @@ import * as Cards from '../models/Card'
 import Player from '../models/Player';
 
 import * as Alexa from 'ask-sdk'
+import GameplayStatus from '../models/GameplayStatus';
 
 export default class DeckService {
-    cards: Cards.Card[]
+    cards: Cards.CardInterface[]
+    private gameplayStatus: GameplayStatus
+    private attributesManager: Alexa.AttributesManager
 
     /**
      * Gets a random unpicked card from the deck and marks it
      * as picked
      * @return {Card}
      */
-    getNewCardForPlayer (player: Player): Cards.Card {
+    getNewCardForPlayer (player: Player): Cards.CardInterface {
         const remainingCards = this.getRemainingCards()
         const randomIndex = Math.floor(Math.random() * remainingCards.length)
         const newCard = remainingCards[randomIndex]
 
         newCard.isPicked = true
         newCard.pickedBy = player
+
+        this.gameplayStatus.cards.push(newCard)
 
         return newCard
     }
@@ -26,7 +31,7 @@ export default class DeckService {
      * Gets all the cards that haven't been picked yet
      * @return {Card[]}
      */
-    getRemainingCards (): Cards.Card[] {
+    getRemainingCards (): Cards.CardInterface[] {
         return this.cards.filter(card => !card.isPicked)
     }
 
@@ -35,7 +40,7 @@ export default class DeckService {
      * @param {Card} card
      * @return {Card[]}
      */
-    getRemainingCardsOfType (card: Cards.Card): Cards.Card[] {
+    getRemainingCardsOfType (card: Cards.CardInterface): Cards.CardInterface[] {
         return this.getRemainingCards().filter((remaining) => {
             return remaining === card
         })
@@ -46,15 +51,21 @@ export default class DeckService {
      * @param {Player} player
      * @return {Card[]}
      */
-    getAllCardsPickedBy (player: Player): Cards.Card[] {
+    getAllCardsPickedBy (player: Player): Cards.CardInterface[] {
         return this.cards.filter(card => card.pickedBy === player)
+    }
+
+    private getCardFromDeck(name: string, suite: Cards.Suite) {
+        return this.cards.find((card) => {
+            return card.name === name && card.suite === suite
+        })
     }
 
     /**
      * Generates a fresh new deck
-     * @return {Card[]}
+     * @return {CardInterface[]}
      */
-    static generateNewDeck (): Cards.Card[] {
+    static generateNewDeck (): Cards.CardInterface[] {
         return [
             new Cards.AceSpades,
             new Cards.TwoSpades,
@@ -111,11 +122,20 @@ export default class DeckService {
         ]
     }
 
-    constructor (attributesManager: Alexa.AttributesManager) {
+    constructor (gameplayStatus: GameplayStatus) {
         const newDeck = DeckService.generateNewDeck()
 
-        // Apply the session data to the new deck.
-        if (sess)
+        this.gameplayStatus = gameplayStatus
         this.cards = newDeck
+        
+        // Apply the persistent data to the new deck.
+        if (this.gameplayStatus.cards) {
+            this.gameplayStatus.cards.forEach((card) => {
+                // Find the card in the deck
+                let cardFromDeck = this.getCardFromDeck(card.name, card.suite)
+
+                cardFromDeck = card
+            })
+        }
     }
 }

@@ -23,11 +23,13 @@ export default class SpecifyPlayerRequestHandler implements Alexa.RequestHandler
         this.game.setupService.specifyNameOfNextPlayer(name)
 
         if (this.game.setupService.haveAllPlayersBeenDefined()) {
-            this.game.persistPlayersFromSetup()
+            return this.game.persistPlayersFromSetup()
+                .then(() => {
 
-            return handlerInput.responseBuilder
-                .speak('Hey ' + this.name + '! Looks like that\'s everyone. When you\'re ready for a card, just say "Alexa, ask Ring of Fire for a card')
-                .getResponse()
+                    return handlerInput.responseBuilder
+                        .speak('Hey ' + this.name + '! Looks like that\'s everyone. When you\'re ready for a card, just say "Alexa, ask Ring of Fire for a card')
+                        .getResponse()
+                })
         }
 
         return handlerInput.responseBuilder

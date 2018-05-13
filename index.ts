@@ -18,5 +18,6 @@ exports.handler = Alexa.SkillBuilders
         new NextCardRequestHandler,
         new UnknownCommandRequestHandler
     )
-    .withTableName('ringOfFire')
+    .withTableName('ringOfFireStorage')
+    .withAutoCreateTable(true)
     .lambda()

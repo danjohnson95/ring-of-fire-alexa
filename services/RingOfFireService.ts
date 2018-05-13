@@ -5,24 +5,21 @@ import PlayersAlreadyDefinedException from '../exceptions/PlayersAlreadyDefinedE
 import PlayersNotSpecifiedException from '../exceptions/PlayersNotSpecifiedException'
 import GameOverException from '../exceptions/GameOverException'
 import Player from '../models/Player'
-import { KingCard, Card } from '../models/Card'
+import { KingCard, Card, CardInterface } from '../models/Card'
 import InvalidPlayerNameSpecifiedException from '../exceptions/InvalidPlayerNameSpecifiedException';
 import NumberOfPlayersNotSpecifiedException from '../exceptions/NumberOfPlayersNotSpecifiedException';
 import DeckService from './DeckService';
 import SetupService from './SetupService';
+import GameplayStatus from '../models/GameplayStatus';
 
 import * as Alexa from 'ask-sdk'
 import { RequestEnvelope } from 'ask-sdk-model'
-
-interface GameplayStatus {
-    players?: Player[]
-}
 
 export default class RingOfFireService {
     private attributesManager: Alexa.AttributesManager
     private requestEnvelope: RequestEnvelope
     private deckService: DeckService
-    private persistentAttributes: GameplayStatus
+    private persistentAttributes?: GameplayStatus
 
     private numberOfPlayers: number = 0
     private cards: Card[]
@@ -49,49 +46,76 @@ export default class RingOfFireService {
         return true
     }
 
-    get currentPlayer(): Player {
-        // TODO: Work out which one is the current one.
-        return new Player({})
-    }
-
     constructor (attributesManager: Alexa.AttributesManager, requestEnvelope: RequestEnvelope) {
         this.attributesManager = attributesManager
         this.requestEnvelope = requestEnvelope
         this.setupService = new SetupService(attributesManager)
-        this.deckService = new DeckService(attributesManager)
-        this.persistentAttributes = this.attributesManager.getPersistentAttributes()
+    }
+
+    public getGameplayStatus (): Promise<GameplayStatus> {
+        return this.attributesManager.getPersistentAttributes()
+            .then((attrs) => {
+                this.persistentAttributes = <GameplayStatus> attrs
+                this.deckService = new DeckService(this.persistentAttributes)
+
+                return this.persistentAttributes
+            })
     }
 
     public startNewGame (): void {
         this.setupService.newSetup()
     }
 
-    public persistPlayersFromSetup (): void {
+    public persistPlayersFromSetup (): Promise<void> {
         let players = []
 
         this.setupService.playerNames.forEach((playerName) => {
             players.push(new Player(playerName))
         })
 
-        return this.attributesManager.setPersistentAttributes({
+        this.attributesManager.setPersistentAttributes({
             players: players,
-            cards: 
+            cards: [] 
         })
+
+        return this.attributesManager.savePersistentAttributes()
     }
 
-    public getNextPlayer (): Player {
+    private getNextPlayer (): Player {
+        const players = this.persistentAttributes.players
+
+        // Is someone active atm?
+        const active = players.find(player => player.isActive)
+
+        if (active) {
+            // Get the next one along
+        }
+
+        let nextPlayer = players[0]
+
+        nextPlayer.isActive = true
+
+        return nextPlayer
+    }
+
+    public getCurrentPlayer(): Player {
+        // TODO: Work out which one is the current one.
         return new Player({})
     }
 
-    public pickNextCard (): Card {
+    public pickNextCard (): Promise<CardInterface> {
         this.checkCanPickCard()
 
-        const nextCard = this.getRandomCard()
+        const player = this.getNextPlayer()
 
-        nextCard.pickedBy = this.currentPlayer
-        nextCard.isPicked = true
+        const card = this.deckService.getNewCardForPlayer(player)
 
-        return nextCard
+        this.attributesManager.setPersistentAttributes(this.persistentAttributes)
+
+        return this.attributesManager.savePersistentAttributes()
+            .then(() => {
+                return card
+            })
     }
 
     private getRandomCard (): Card {
