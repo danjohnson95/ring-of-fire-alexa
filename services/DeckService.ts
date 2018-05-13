@@ -1,6 +1,8 @@
 import * as Cards from '../models/Card'
 import Player from '../models/Player';
 
+import * as Alexa from 'ask-sdk'
+
 export default class DeckService {
     cards: Cards.Card[]
 
@@ -14,13 +16,10 @@ export default class DeckService {
         const randomIndex = Math.floor(Math.random() * remainingCards.length)
         const newCard = remainingCards[randomIndex]
 
-        // Now get that card from the deck.
-        const newCardFromDeck = this.cards.find(card => card === newCard)
+        newCard.isPicked = true
+        newCard.pickedBy = player
 
-        newCardFromDeck.isPicked = true
-        newCardFromDeck.pickedBy = player
-
-        return newCardFromDeck
+        return newCard
     }
 
     /**
@@ -31,30 +30,16 @@ export default class DeckService {
         return this.cards.filter(card => !card.isPicked)
     }
 
+    /**
+     * Gets the remaining cards that match the type specified
+     * @param {Card} card
+     * @return {Card[]}
+     */
     getRemainingCardsOfType (card: Cards.Card): Cards.Card[] {
         return this.getRemainingCards().filter((remaining) => {
             return remaining === card
         })
     }
-
-    /**
-     * The total number of remaining cards in the deck
-     * @return {number}
-     */
-    getNumberOfRemainingCards (): number {
-        return this.getRemainingCards().length
-    }
-
-    // /**
-    //  * The remaining count of the specified card
-    //  * @param {Card} card 
-    //  * @return {number}
-    //  */
-    // getNumberOfRemainingCard (card: Card): number {
-    //     const remainingCards = this.getRemainingCards()
-    //     // return remainingCards.filter((remainingCard) => remainingCard typeof card).length
-    // }
-
 
     /**
      * Returns all the cards picked by the specified player
@@ -65,10 +50,10 @@ export default class DeckService {
         return this.cards.filter(card => card.pickedBy === player)
     }
 
-    // getCardTypePickedBy (player: Player, card: Card): Card[] {
-
-    // }
-
+    /**
+     * Generates a fresh new deck
+     * @return {Card[]}
+     */
     static generateNewDeck (): Cards.Card[] {
         return [
             new Cards.AceSpades,
@@ -126,11 +111,11 @@ export default class DeckService {
         ]
     }
 
-    constructor (sessionData: any) {
+    constructor (attributesManager: Alexa.AttributesManager) {
         const newDeck = DeckService.generateNewDeck()
 
         // Apply the session data to the new deck.
-
+        if (sess)
         this.cards = newDeck
     }
 }

@@ -4,15 +4,19 @@
 import NewGameRequestHandler from './handlers/NewGameRequestHandler'
 import UnknownCommandRequestHandler from './handlers/UnknownCommandRequestHandler'
 import SpecifyNumberOfPlayersRequestHandler from './handlers/SpecifyNumberOfPlayersRequestHandler'
+import SpecifyPlayerRequestHandler from './handlers/SpecifyPlayerRequestHandler'
+import NextCardRequestHandler from './handlers/NextCardRequestHandler'
 
-import { SkillBuilders } from 'ask-sdk-core'
-import { RequestEnvelope } from 'ask-sdk-model'
+import * as Alexa from 'ask-sdk'
 
-exports.handler = SkillBuilders
-    .custom()
+exports.handler = Alexa.SkillBuilders
+    .standard()
     .addRequestHandlers(
         new NewGameRequestHandler,
         new SpecifyNumberOfPlayersRequestHandler,
+        new SpecifyPlayerRequestHandler,
+        new NextCardRequestHandler,
         new UnknownCommandRequestHandler
     )
+    .withTableName('ringOfFire')
     .lambda()

@@ -1,8 +1,8 @@
 import RingOfFireService from '../services/RingOfFireService'
+import * as Alexa from 'ask-sdk'
 import { Response, IntentRequest } from 'ask-sdk-model'
-import { RequestHandler, HandlerInput } from 'ask-sdk-core'
 
-export default class SpecifyNumberOfPlayersRequestHandler implements RequestHandler {
+export default class SpecifyNumberOfPlayersRequestHandler implements Alexa.RequestHandler {
     private intentName = 'SpecifyNumberOfPlayers'
 
     numberOfPlayers: number
@@ -12,15 +12,15 @@ export default class SpecifyNumberOfPlayersRequestHandler implements RequestHand
             && handlerInput.requestEnvelope.request.intent.name === this.intentName
     }
 
-    handle (handlerInput: HandlerInput): Response {
+    handle (handlerInput: Alexa.HandlerInput): Response {
         const sessionData = handlerInput.attributesManager
-        const game = new RingOfFireService(sessionData)
+        const game = new RingOfFireService(handlerInput.attributesManager, handlerInput.requestEnvelope)
         const request: IntentRequest = <IntentRequest> handlerInput.requestEnvelope.request
-        const numberOfPlayers = Number.parseInt(request.intent.slots.number.value)
+        const numberOfPlayers = Number.parseInt(request.intent.slots.NumberOfPlayers.value)
 
         this.numberOfPlayers = numberOfPlayers
 
-        game.specifyNumberOfPlayers(numberOfPlayers)
+        game.setupService.specifyNumberOfPlayers(numberOfPlayers)
 
         return handlerInput.responseBuilder
             .speak(this.getResponseSpeech())
@@ -29,10 +29,10 @@ export default class SpecifyNumberOfPlayersRequestHandler implements RequestHand
     }
 
     getResponseSpeech () {
-        return 'Okay, ' + this.numberOfPlayers + ' it is.'
+        return 'Okay, ' + this.numberOfPlayers + ' it is. Player one, what\'s your name?'
     }
 
     getRepromptSpeech () {
-        return 'Sorry, how many was that?'
+        return 'Player one, what\'s your name?'
     }
 }

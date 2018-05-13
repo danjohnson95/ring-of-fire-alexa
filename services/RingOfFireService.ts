@@ -5,20 +5,47 @@ import PlayersAlreadyDefinedException from '../exceptions/PlayersAlreadyDefinedE
 import PlayersNotSpecifiedException from '../exceptions/PlayersNotSpecifiedException'
 import GameOverException from '../exceptions/GameOverException'
 import Player from '../models/Player'
-import Card from '../models/Card'
+import { KingCard, Card } from '../models/Card'
 import InvalidPlayerNameSpecifiedException from '../exceptions/InvalidPlayerNameSpecifiedException';
 import NumberOfPlayersNotSpecifiedException from '../exceptions/NumberOfPlayersNotSpecifiedException';
+import DeckService from './DeckService';
+import SetupService from './SetupService';
+
+import * as Alexa from 'ask-sdk'
+import { RequestEnvelope } from 'ask-sdk-model'
+
+interface GameplayStatus {
+    players?: Player[]
+}
 
 export default class RingOfFireService {
-    private sessionData: any
+    private attributesManager: Alexa.AttributesManager
+    private requestEnvelope: RequestEnvelope
+    private deckService: DeckService
+    private persistentAttributes: GameplayStatus
+
     private numberOfPlayers: number = 0
     private cards: Card[]
 
-    gameStarted: boolean = false
-    players: Player[] = []
+    setupService: SetupService
+
+    get gameInProgress (): boolean {
+        return false
+    }
 
     get anyCardsLeft(): boolean {
-        // TODO: Have 4 Kings been picked? If not, continue.
+        const remainingCount = this.deckService.getRemainingCards().length
+
+        if (remainingCount === 0) {
+            return false
+        }
+
+        // const remainingKings = this.deckService.getRemainingCardsOfType(KingCard)
+
+        // if (remainingKings === 0) {
+        //     return false
+        // }
+
         return true
     }
 
@@ -27,36 +54,29 @@ export default class RingOfFireService {
         return new Player({})
     }
 
-    get haveAllPlayersBeenDefined(): boolean {
-        return this.numberOfPlayers > 0 
-            && this.players.length === this.numberOfPlayers
+    constructor (attributesManager: Alexa.AttributesManager, requestEnvelope: RequestEnvelope) {
+        this.attributesManager = attributesManager
+        this.requestEnvelope = requestEnvelope
+        this.setupService = new SetupService(attributesManager)
+        this.deckService = new DeckService(attributesManager)
+        this.persistentAttributes = this.attributesManager.getPersistentAttributes()
     }
 
-    constructor (sessionData: any) {
-        this.sessionData = sessionData
+    public startNewGame (): void {
+        this.setupService.newSetup()
     }
 
-    public startNewGame () {
-        this.gameStarted = true
-        this.players = []
-    }
+    public persistPlayersFromSetup (): void {
+        let players = []
 
-    public specifyNumberOfPlayers (numberOfPlayers: number) {
-        this.checkCanSpecifyNumberOfPlayers()
-        this.checkNumberOfPlayersIsValid(numberOfPlayers)
-
-        this.numberOfPlayers = numberOfPlayers
-    }
-
-    public specifyNameOfPlayer (playerNumber: number, name: string) {
-        this.checkCanSpecifyNameOfPlayer(playerNumber)
-
-        const player = new Player({
-            name: name,
-            playerNumber: playerNumber
+        this.setupService.playerNames.forEach((playerName) => {
+            players.push(new Player(playerName))
         })
 
-        this.players.push(player)
+        return this.attributesManager.setPersistentAttributes({
+            players: players,
+            cards: 
+        })
     }
 
     public getNextPlayer (): Player {
@@ -81,51 +101,9 @@ export default class RingOfFireService {
         return unpickedCards[randomIndex]
     }
 
-    private checkCanSpecifyNumberOfPlayers (): void {
-        if (!this.gameStarted) {
-            throw new GameNotStartedException()
-        }
-
-        if (this.numberOfPlayers > 0) {
-            throw new NumberOfPlayersAlreadyDefinedException()
-        }
-
-        if (this.haveAllPlayersBeenDefined) {
-            throw new PlayersAlreadyDefinedException()
-        }
-    }
-
-    private checkCanSpecifyNameOfPlayer (playerNumber: number): void {
-        if (!this.gameStarted) {
-            throw new GameNotStartedException()
-        }
-
-        if (this.numberOfPlayers === 0) {
-            throw new NumberOfPlayersNotSpecifiedException()
-        }
-
-        if (this.haveAllPlayersBeenDefined) {
-            throw new PlayersAlreadyDefinedException()
-        }
-
-        if (playerNumber > this.numberOfPlayers) {
-            throw new InvalidPlayerNameSpecifiedException()
-        }
-    }
-
-    private checkNumberOfPlayersIsValid (numberOfPlayers: number) {
-        if (numberOfPlayers < 1) {
-            throw new NumberOfPlayersInvalidException()
-        }
-    }
-
     private checkCanPickCard (): boolean {
-        if (!this.gameStarted) {
+        if (this.setupService.setupInProgress) {
             throw new GameNotStartedException()
-        }
-
-        if (!this.haveAllPlayersBeenDefined) {
-            throw new PlayersNotSpecifiedException()
         }
 
         if (!this.anyCardsLeft) {

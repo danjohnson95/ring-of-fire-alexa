@@ -1,8 +1,8 @@
 import RingOfFireService from '../services/RingOfFireService'
+import * as Alexa from 'ask-sdk'
 import { Response } from 'ask-sdk-model'
-import { RequestHandler, HandlerInput } from 'ask-sdk-core'
 
-export default class NewGameRequestHandler implements RequestHandler {
+export default class NewGameRequestHandler implements Alexa.RequestHandler {
 
     private intentName = 'NewGame'
 
@@ -28,17 +28,16 @@ export default class NewGameRequestHandler implements RequestHandler {
         return this.repromptSpeeches[Math.floor(Math.random() * this.repromptSpeeches.length)]
     }
 
-    canHandle (handlerInput: HandlerInput): boolean | Promise<boolean> {
+    canHandle (handlerInput: Alexa.HandlerInput): boolean | Promise<boolean> {
         return (handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === this.intentName)
             || handlerInput.requestEnvelope.request.type === 'LaunchRequest'
     }
 
-    handle (handlerInput: HandlerInput): Response | Promise<Response> {
-        const sessionData = handlerInput.attributesManager
-        const game = new RingOfFireService(sessionData)
+    handle (handlerInput: Alexa.HandlerInput): Response | Promise<Response> {
+        const game = new RingOfFireService(handlerInput.attributesManager, handlerInput.requestEnvelope)
 
-        if (game.gameStarted) {
+        if (game.gameInProgress) {
             return this.gameAlreadyInProgressResponse(handlerInput)
         }
 
@@ -58,7 +57,7 @@ export default class NewGameRequestHandler implements RequestHandler {
         return this.randomRepromptSpeech
     }
 
-    gameAlreadyInProgressResponse (handlerInput: HandlerInput): Response {
+    gameAlreadyInProgressResponse (handlerInput: Alexa.HandlerInput): Response {
         return handlerInput.responseBuilder
             .speak('There\'s already a game in progress. If you want to start over, just say "Alexa, ask Ring of Fire to end this game"')
             .getResponse()
