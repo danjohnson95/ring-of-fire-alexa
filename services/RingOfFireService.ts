@@ -74,9 +74,15 @@ export default class RingOfFireService {
 
     public persistPlayersFromSetup (): Promise<void> {
         let players = []
+        let count = 1
 
         this.setupService.playerNames.forEach((playerName) => {
-            players.push(new Player(playerName))
+            players.push(new Player({
+                name: playerName,
+                playerNumber: count
+            }))
+
+            count += 1
         })
 
         return this.attributesManager.getPersistentAttributes()
