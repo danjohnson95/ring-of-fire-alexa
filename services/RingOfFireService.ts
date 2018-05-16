@@ -73,12 +73,15 @@ export default class RingOfFireService {
             players.push(new Player(playerName))
         })
 
-        this.attributesManager.setPersistentAttributes({
-            players: players,
-            cards: [] 
-        })
+        return this.attributesManager.getPersistentAttributes()
+            .then((attributes) => {
+                attributes.players = players
+                attributes.cards = []
 
-        return this.attributesManager.savePersistentAttributes()
+                this.attributesManager.setPersistentAttributes(attributes);
+
+                return this.attributesManager.savePersistentAttributes();
+            })
     }
 
     private getNextPlayer (): Player {

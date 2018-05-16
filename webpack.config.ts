@@ -8,8 +8,10 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'handler.js',
-        libraryTarget: 'commonjs'
+        library: 'handler',
+        libraryTarget: 'commonjs2'
     },
+    target: 'node',
     resolve: {
         extensions: ['.ts', '.js']
     },
