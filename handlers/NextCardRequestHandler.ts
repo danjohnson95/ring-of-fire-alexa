@@ -1,6 +1,7 @@
 import RingOfFireService from '../services/RingOfFireService'
 import * as Alexa from 'ask-sdk'
 import { Response, IntentRequest } from 'ask-sdk-model'
+import { Card, CardInterface } from '../models/Card'
 
 export default class NextCardRequestHandler implements Alexa.RequestHandler {
     private intentName = 'GetNextCard'
@@ -22,8 +23,15 @@ export default class NextCardRequestHandler implements Alexa.RequestHandler {
             })
             .then((card) => {
                 return handlerInput.responseBuilder
-                    .speak(card.name)
+                    .speak(this.getSpeechForCard(card))
                     .getResponse()
             })
+    }
+
+    getSpeechForCard (card: CardInterface): string {
+        const intro = 'It\'s ' + card.name + ' of ' + card.suite + '. '
+        const randomIndex = Math.floor(Math.random() * card.descriptions.length)
+
+        return intro + card.descriptions[randomIndex]
     }
 }
