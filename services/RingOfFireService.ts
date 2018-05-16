@@ -66,6 +66,12 @@ export default class RingOfFireService {
         this.setupService.newSetup()
     }
 
+    public endGame (): Promise<void> {
+        this.attributesManager.setPersistentAttributes({})
+
+        return this.attributesManager.savePersistentAttributes()
+    }
+
     public persistPlayersFromSetup (): Promise<void> {
         let players = []
 
