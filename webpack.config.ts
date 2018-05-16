@@ -1,5 +1,6 @@
 // const path = require('path')
 import * as path from 'path'
+import * as HardSourceWebpackPlugin from 'hard-source-webpack-plugin'
 
 module.exports = {
     mode: 'production',
@@ -16,5 +17,8 @@ module.exports = {
         rules: [
             { test: /\.ts$/, use: 'ts-loader' }
         ]
-    }
+    },
+    plugins: [
+        new HardSourceWebpackPlugin()
+    ]
 }
